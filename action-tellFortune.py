@@ -85,7 +85,7 @@ class Fortunes:
                     fortunes[topic] = f.read().encode('utf8').split('%')
                 cookies = []
                 for cookie in fortunes[topic]:
-                    if len(cookie) <= self.max_length:
+                    if len(cookie) <= self.max_length and len(cookie) > 1:
                         cookies.append(cookie)
                 fortunes[topic] = cookies  # without cookies over maximum length
             self.all_fortunes = fortunes
