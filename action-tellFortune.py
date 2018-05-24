@@ -36,8 +36,8 @@ def subscribe_intent_callback(hermes, intentMessage):
             result_sentence = "Fehler: Glückskekse konnten nicht eingelesen werden. Bitte schaue in der Beschreibung dieses Skills nach, wie man Fortunes installiert."
             hermes.publish_end_session(intentMessage.session_id, result_sentence)
     elif intentname == "confirmOtherCookie":
-        if "confirmOtherCookie" in jokes.wanted_intents:
-            jokes.wanted_intents = []
+        if "confirmOtherCookie" in fortunes.wanted_intents:
+            fortunes.wanted_intents = []
             answer = intentMessage.slots.answer.first().value
             if "yes" in answer:
                 conf = read_configuration_file(CONFIG_INI)
@@ -57,9 +57,9 @@ def action_wrapper(hermes, intentMessage, conf):
     else:
         topic = None
     result_sentence = fortunes.say(topic)
-    jokes.wanted_intents = ["confirmOtherCookie"]
+    fortunes.wanted_intents = ["confirmOtherCookie"]
     current_session_id = intentMessage.session_id
-    hermes.publish_continue_session(current_session_id, result_sentence, ["domi:confirmJoke"])
+    hermes.publish_continue_session(current_session_id, result_sentence, ["domi:confirmOtherCookie"])
 
 class Fortunes:
     def __init__(self, config, topics):
@@ -67,7 +67,7 @@ class Fortunes:
         self.topics = topics
         self.max_length = config['global']['fortunes_max_laenge']
         self.all_fortunes = {}
-        self.jokes_status = None
+        self.fortunes_status = None
 
     def read_files(self):
         try:
