@@ -82,7 +82,7 @@ class Fortunes:
                 fortunes[topic] = cookies  # without cookies over maximum length
             self.all_fortunes = fortunes
             return 1  # status is ok
-        except FileNotFoundError:
+        except IOError:
             return 0  # error
 
     def say(self, topic):
