@@ -83,9 +83,9 @@ class Fortunes:
                 cookies = []
                 for cookie in fortunes[topic]:
                     # TODO: Lengths are not shorter than before...
-                    print("max_length:", self.max_length)
                     if len(cookie) <= self.max_length:
                         cookies.append(cookie)
+                        print("cookie_length appended:", len(cookie)
                 fortunes[topic] = cookies  # without cookies over maximum length
             self.all_fortunes = fortunes
             return 1  # status is ok
