@@ -53,7 +53,7 @@ def action_wrapper(hermes, intentMessage, conf):
     - conf : a dictionary that holds the skills parameters you defined 
     """
     if intentMessage.slots.topic.all():
-        topic = intentMessage.slots.topic.first().value
+        topic = intentMessage.slots.topic.first().value.lower()
     else:
         topic = None
     result_sentence = fortunes.say(topic)
