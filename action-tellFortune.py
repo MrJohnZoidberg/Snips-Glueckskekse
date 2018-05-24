@@ -65,7 +65,7 @@ class Fortunes:
     def __init__(self, config, topics):
         self.wanted_intents = []
         self.topics = topics
-        self.max_length = config['fortunes_max_laenge']
+        self.max_length = config['global']['fortunes_max_laenge']
         self.all_fortunes = {}
         self.jokes_status = None
 
