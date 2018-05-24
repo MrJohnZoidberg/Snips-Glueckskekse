@@ -43,6 +43,7 @@ def subscribe_intent_callback(hermes, intentMessage):
                 conf = read_configuration_file(CONFIG_INI)
                 action_wrapper(hermes, intentMessage, conf)
             else:
+                fortunes.last_topic = None
                 hermes.publish_end_session(intentMessage.session_id, "")
 
 def action_wrapper(hermes, intentMessage, conf):
@@ -54,6 +55,9 @@ def action_wrapper(hermes, intentMessage, conf):
     """
     if intentMessage.slots.topic.all():
         topic = intentMessage.slots.topic.first().value.lower()
+        fortunes.last_topic = topic
+    elif fortunes.last_topic:
+        topic = fortunes.last_topic
     else:
         topic = None
     result_sentence = fortunes.say(topic)
@@ -68,6 +72,7 @@ class Fortunes:
         self.max_length = config['global']['fortunes_max_laenge']
         self.all_fortunes = {}
         self.fortunes_status = None
+        self.last_topic = None
 
     def read_files(self):
         try:
