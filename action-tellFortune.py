@@ -10,7 +10,7 @@ import random
 CONFIGURATION_ENCODING_FORMAT = "utf-8"
 CONFIG_INI = "config.ini"
 FORTUNE_TOPICS = ["tips", "sprueche", "wusstensie", "murphy", "fussball", "bahnhof",
-                  "ms", "letzteworte", "regeln", "quiz", "sprichworte", "unfug",
+                  "ms", "letzteworte", "regeln", "quiz", "sprichworte", "unfug", "witze",
                   "warmduscher", "zitate", "kinderzitate", "doppelsinnig", "lieberals"]
 
 class SnipsConfigParser(ConfigParser.SafeConfigParser):
