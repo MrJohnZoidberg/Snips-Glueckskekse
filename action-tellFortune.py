@@ -70,20 +70,20 @@ class Fortunes:
         self.jokes_status = None
 
     def read_files(self):
-        try:
-            fortunes = {}
-            for topic in self.topics:
-                with io.open("/usr/share/games/fortunes/de/" + topic, 'r') as f:
-                    fortunes[topic] = f.read().encode('utf8').split('%')
-                cookies = []
-                for cookie in fortunes[topic]:
-                    if len(cookie) <= self.max_length:
-                        cookies.append(cookie)
-                fortunes[topic] = cookies  # without cookies over maximum length
-            self.all_fortunes = fortunes
-            return 1  # status is ok
-        except IOError:
-            return 0  # error
+        #try:
+        fortunes = {}
+        for topic in self.topics:
+            with io.open("/usr/share/games/fortunes/de/" + topic, 'r') as f:
+                fortunes[topic] = f.read().encode('utf8').split('%')
+            cookies = []
+            for cookie in fortunes[topic]:
+                if len(cookie) <= self.max_length:
+                    cookies.append(cookie)
+            fortunes[topic] = cookies  # without cookies over maximum length
+        self.all_fortunes = fortunes
+        return 1  # status is ok
+        #except IOError:
+        #    return 0  # error
 
     def say(self, topic):
         cookies = []
