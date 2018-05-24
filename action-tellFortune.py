@@ -69,7 +69,10 @@ class Fortunes:
     def __init__(self, config, topics):
         self.wanted_intents = []
         self.topics = topics
-        self.max_length = config['global']['fortunes_max_laenge']
+        try:
+            self.max_length = int(config['global']['fortunes_max_laenge'])
+        except KeyError:
+            self.max_length = 100
         self.all_fortunes = {}
         self.fortunes_status = None
         self.last_topic = None
@@ -82,11 +85,8 @@ class Fortunes:
                     fortunes[topic] = f.read().encode('utf8').split('%')
                 cookies = []
                 for cookie in fortunes[topic]:
-                    # TODO: Lengths are not shorter than before...
                     if len(cookie) <= self.max_length:
                         cookies.append(cookie)
-                        print("types:", type(cookie), type(self.max_length))
-                        print("cookie_length appended:", len(cookie))
                 fortunes[topic] = cookies  # without cookies over maximum length
             self.all_fortunes = fortunes
             return 1  # status is ok
