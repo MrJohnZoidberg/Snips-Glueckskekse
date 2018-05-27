@@ -13,9 +13,12 @@ FORTUNE_TOPICS = ["tips", "sprueche", "wusstensie", "murphy", "fussball", "bahnh
                   "ms", "letzteworte", "regeln", "quiz", "sprichworte", "unfug", "witze",
                   "warmduscher", "zitate", "kinderzitate", "doppelsinnig", "lieberals"]
 
+
 class SnipsConfigParser(ConfigParser.SafeConfigParser):
     def to_dict(self):
-        return {section : {option_name : option for option_name, option in self.items(section)} for section in self.sections()}
+        return {section : {option_name : option for option_name, option in self.items(section)}
+                for section in self.sections()}
+
 
 def read_configuration_file(configuration_file):
     try:
@@ -26,6 +29,7 @@ def read_configuration_file(configuration_file):
     except (IOError, ConfigParser.Error) as e:
         return dict()
 
+
 def subscribe_intent_callback(hermes, intentMessage):
     user,intentname = intentMessage.intent.intent_name.split(':')  # the user can fork the intent with this method
     if intentname == "tellFortune":
@@ -33,7 +37,8 @@ def subscribe_intent_callback(hermes, intentMessage):
             conf = read_configuration_file(CONFIG_INI)
             action_wrapper(hermes, intentMessage, conf)
         else:
-            result_sentence = "Fehler: Glückskekse konnten nicht eingelesen werden. Bitte schaue in der Beschreibung dieses Skills nach, wie man Fortunes installiert."
+            result_sentence = "Fehler: Glückskekse konnten nicht eingelesen werden. Bitte schaue in der Beschreibung" \
+                              "dieses Skills nach, wie man Fortunes installiert."
             hermes.publish_end_session(intentMessage.session_id, result_sentence)
     elif intentname == "confirmOtherCookie":
         if "confirmOtherCookie" in fortunes.wanted_intents:
@@ -45,6 +50,7 @@ def subscribe_intent_callback(hermes, intentMessage):
             else:
                 fortunes.last_topic = None
                 hermes.publish_end_session(intentMessage.session_id, "")
+
 
 def action_wrapper(hermes, intentMessage, conf):
     """ Write the body of the function that will be executed once the intent is recognized. 
@@ -64,6 +70,7 @@ def action_wrapper(hermes, intentMessage, conf):
     fortunes.wanted_intents = ["confirmOtherCookie"]
     current_session_id = intentMessage.session_id
     hermes.publish_continue_session(current_session_id, result_sentence, ["domi:confirmOtherCookie"])
+
 
 class Fortunes:
     def __init__(self, config, topics):
@@ -85,7 +92,7 @@ class Fortunes:
                     fortunes[topic] = f.read().encode('utf8').split('%')
                 cookies = []
                 for cookie in fortunes[topic]:
-                    if len(cookie) <= self.max_length and len(cookie) > 1:
+                    if self.max_length >= len(cookie) > 1:
                         cookies.append(cookie)
                 fortunes[topic] = cookies  # without cookies over maximum length
             self.all_fortunes = fortunes
@@ -109,9 +116,10 @@ class Fortunes:
         random_cookie = random.choice(cookies).replace('\n', ' ')
         response = "{cookie} . Noch ein Spruch?".format(cookie=random_cookie)
         return response
-        
+
+
 if __name__ == "__main__":
     fortunes = Fortunes(read_configuration_file(CONFIG_INI), FORTUNE_TOPICS)
-    fortunes.fortunes_status = fortunes.read_files()
+    #fortunes.fortunes_status = fortunes.read_files()
     with Hermes("localhost:1883") as h:
         h.subscribe_intents(subscribe_intent_callback).start()
