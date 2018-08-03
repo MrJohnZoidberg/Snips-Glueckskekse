@@ -54,10 +54,13 @@ def on_message(client, userdata, msg):
     elif msg.topic == 'hermes/asr/textCaptured':
         data = json.loads(msg.payload.decode("utf-8"))
         if data['text'] == "":
+            client.unsubscribe("hermes/asr/textCaptured")
             session_id = data['sessionId']
-            print("Trying to end session...")
             end(session_id)
-            start("Noch ein Spruch?", ["domi:confirmOtherCookie"])
+            if fortunes.question_repetitions < fortunes.max_question_repetitions:
+                fortunes.question_repetitions += 1
+                client.subscribe("hermes/asr/textCaptured")
+                start("Noch ein Spruch?", ["domi:confirmOtherCookie"])
     elif msg.topic == 'hermes/intent/domi:confirmOtherCookie':
         data = json.loads(msg.payload.decode("utf-8"))
         session_id = data['sessionId']
@@ -81,6 +84,7 @@ def action_wrapper(client, slots, session_id):
     result_sentence = fortunes.say(topic)
     client.subscribe("hermes/intent/domi:confirmOtherCookie")
     client.subscribe("hermes/asr/textCaptured")
+    fortunes.question_repetitions = 0
     dialogue(session_id, result_sentence, ["domi:confirmOtherCookie"])
 
 
@@ -111,6 +115,8 @@ class Fortunes:
         self.all_fortunes = {}
         self.fortunes_status = None
         self.last_topic = None
+        self.question_repetitions = 0
+        self.max_question_repetitions = 1
 
     def read_files(self):
         try:
