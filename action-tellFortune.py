@@ -135,7 +135,7 @@ class Fortunes:
                     if self.max_length >= len(cookie) > 1:
                         cookies.append(cookie)
                 fortunes_dict[topic] = cookies  # without cookies over maximum length
-            self.all_fortunes = fortunes
+            self.all_fortunes = fortunes_dict
             return 1  # status is ok
         except IOError:
             return 0  # error
