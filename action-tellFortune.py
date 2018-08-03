@@ -16,7 +16,8 @@ FORTUNE_TOPICS = ["tips", "sprueche", "wusstensie", "murphy", "fussball", "bahnh
 
 class SnipsConfigParser(ConfigParser.SafeConfigParser):
     def to_dict(self):
-        return {section: {option_name: option for option_name, option in self.items(section)} for section in self.sections()}
+        return {section: {option_name: option for option_name, option in self.items(section)}
+                for section in self.sections()}
 
 
 def read_configuration_file(configuration_file):
@@ -25,7 +26,7 @@ def read_configuration_file(configuration_file):
             conf_parser = SnipsConfigParser()
             conf_parser.readfp(f)
             return conf_parser.to_dict()
-    except (IOError, ConfigParser.Error) as e:
+    except (IOError, ConfigParser.Error):
         return dict()
 
 
@@ -52,9 +53,9 @@ def on_message(client, userdata, msg):
                               "dieser App nach, wie man Fortunes installiert."
             say(session_id, result_sentence)
     elif msg.topic == 'hermes/asr/textCaptured':
+        client.unsubscribe("hermes/asr/textCaptured")
         data = json.loads(msg.payload.decode("utf-8"))
         if data['text'] == "":
-            client.unsubscribe("hermes/asr/textCaptured")
             session_id = data['sessionId']
             end(session_id)
             if fortunes.question_repetitions < fortunes.max_question_repetitions:
@@ -91,10 +92,12 @@ def action_wrapper(client, slots, session_id):
 def say(session_id, text):
     mqtt_client.publish('hermes/dialogueManager/endSession', json.dumps({'text': text, "sessionId": session_id}))
 
+
 def start(text, intent_filter):
     mqtt_client.publish('hermes/dialogueManager/startSession',
                         json.dumps({'init': {'type': "action", 'text': text, 'canBeEnqueued': True,
                                     'intentFilter': intent_filter}}))
+
 
 def end(session_id):
     mqtt_client.publish('hermes/dialogueManager/endSession', json.dumps({"sessionId": session_id}))
@@ -116,22 +119,25 @@ class Fortunes:
         self.fortunes_status = None
         self.last_topic = None
         self.question_repetitions = 0
-        self.max_question_repetitions = 1
+        try:
+            self.max_question_repetitions = int(config['global']['max_frage_wiederholungen'])
+        except KeyError:
+            self.max_question_repetitions = 1
 
     def read_files(self):
         try:
-            fortunes = {}
+            fortunes_dict = {}
             for topic in self.topics:
                 with io.open("de/" + topic, 'r') as f:
-                    fortunes[topic] = f.read().encode('utf8').split('%')
+                    fortunes_dict[topic] = f.read().encode('utf8').split('%')
                 cookies = []
-                for cookie in fortunes[topic]:
+                for cookie in fortunes_dict[topic]:
                     if self.max_length >= len(cookie) > 1:
                         cookies.append(cookie)
-                fortunes[topic] = cookies  # without cookies over maximum length
+                fortunes_dict[topic] = cookies  # without cookies over maximum length
             self.all_fortunes = fortunes
             return 1  # status is ok
-        except IOError as e:
+        except IOError:
             return 0  # error
 
     def say(self, topic):
