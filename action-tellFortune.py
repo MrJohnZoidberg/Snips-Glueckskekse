@@ -85,7 +85,7 @@ def action_wrapper(client, slots, session_id):
 
 
 def say(session_id, text):
-    mqtt_client.publish('hermes/dialogueManager/endSession', json.dumps({'text': text, "sessionId": session_id}))
+    mqtt_client.publish('hermes/dialogueManager/endSession', json.dumps({'init': {'text': text, "sessionId": session_id}}))
 
 def start(text, intent_filter):
     mqtt_client.publish('hermes/dialogueManager/startSession',
