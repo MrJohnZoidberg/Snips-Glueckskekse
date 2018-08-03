@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import ConfigParser
-from hermes_python.hermes import Hermes
-from hermes_python.ontology import *
 import io
+import paho.mqtt.client as mqtt
+import json
 import random
 
 CONFIGURATION_ENCODING_FORMAT = "utf-8"
@@ -16,8 +16,7 @@ FORTUNE_TOPICS = ["tips", "sprueche", "wusstensie", "murphy", "fussball", "bahnh
 
 class SnipsConfigParser(ConfigParser.SafeConfigParser):
     def to_dict(self):
-        return {section : {option_name : option for option_name, option in self.items(section)}
-                for section in self.sections()}
+        return {section: {option_name: option for option_name, option in self.items(section)} for section in self.sections()}
 
 
 def read_configuration_file(configuration_file):
@@ -30,51 +29,74 @@ def read_configuration_file(configuration_file):
         return dict()
 
 
-def subscribe_intent_callback(hermes, intentMessage):
-    user,intentname = intentMessage.intent.intent_name.split(':')  # the user can fork the intent with this method
-    if intentname == "tellFortune":
+conf = read_configuration_file(CONFIG_INI)
+print("Conf:", conf)
+
+# MQTT client to connect to the bus
+mqtt_client = mqtt.Client()
+
+
+def on_connect(client, userdata, flags, rc):
+    client.subscribe("hermes/intent/domi:tellFortune")
+
+
+def on_message(client, userdata, msg):
+    if msg.topic == 'hermes/intent/domi:tellFortune':
+        data = json.loads(msg.payload.decode("utf-8"))
+        session_id = data['sessionId']
+        slots = {slot['slotName']: slot['value']['value'] for slot in data['slots']}
         if fortunes.fortunes_status:
-            conf = read_configuration_file(CONFIG_INI)
-            action_wrapper(hermes, intentMessage, conf)
+            action_wrapper(client, slots, session_id)
         else:
             result_sentence = "Fehler: Glückskekse konnten nicht eingelesen werden. Bitte schaue in der Beschreibung" \
                               "dieser App nach, wie man Fortunes installiert."
-            hermes.publish_end_session(intentMessage.session_id, result_sentence)
-    elif intentname == "confirmOtherCookie":
-        if "confirmOtherCookie" in fortunes.wanted_intents:
-            fortunes.wanted_intents = []
-            answer = intentMessage.slots.answer.first().value
-            if "yes" in answer:
-                conf = read_configuration_file(CONFIG_INI)
-                action_wrapper(hermes, intentMessage, conf)
-            else:
-                fortunes.last_topic = None
-                hermes.publish_end_session(intentMessage.session_id, "")
+            say(session_id, result_sentence)
+    elif msg.topic == 'hermes/asr/textCaptured':
+        data = json.loads(msg.payload.decode("utf-8"))
+        if data['text'] == "":
+            session_id = data['sessionId']
+            dialogue(session_id, "Noch ein Spruch?", ["domi:confirmOtherCookie"])
+    elif msg.topic == 'hermes/intent/domi:confirmOtherCookie':
+        data = json.loads(msg.payload.decode("utf-8"))
+        session_id = data['sessionId']
+        slots = {slot['slotName']: slot['value']['value'] for slot in data['slots']}
+        answer = slots['answer']
+        if "yes" in answer:
+            action_wrapper(client, slots, session_id)
+        else:
+            fortunes.last_topic = None
+            end(session_id)
 
 
-def action_wrapper(hermes, intentMessage, conf):
-    """ Write the body of the function that will be executed once the intent is recognized. 
-    In your scope, you have the following objects : 
-    - intentMessage : an object that represents the recognized intent
-    - hermes : an object with methods to communicate with the MQTT bus following the hermes protocol. 
-    - conf : a dictionary that holds the skills parameters you defined 
-    """
-    if intentMessage.slots.topic:
-        topic = intentMessage.slots.topic.first().value.lower()
+def action_wrapper(client, slots, session_id):
+    if slots['topic']:
+        topic = slots['topic'].lower()
         fortunes.last_topic = topic
     elif fortunes.last_topic:
         topic = fortunes.last_topic
     else:
         topic = None
     result_sentence = fortunes.say(topic)
-    fortunes.wanted_intents = ["confirmOtherCookie"]
-    current_session_id = intentMessage.session_id
-    hermes.publish_continue_session(current_session_id, result_sentence, ["domi:confirmOtherCookie"])
+    client.subscribe("hermes/intent/domi:confirmOtherCookie")
+    client.subscribe("hermes/asr/textCaptured")
+    dialogue(session_id, result_sentence, ["domi:confirmOtherCookie"])
+
+
+def say(session_id, text):
+    mqtt_client.publish('hermes/dialogueManager/endSession', json.dumps({'text': text, "sessionId": session_id}))
+
+
+def end(session_id):
+    mqtt_client.publish('hermes/dialogueManager/endSession', json.dumps({"sessionId": session_id}))
+
+
+def dialogue(session_id, text, intent_filter):
+    mqtt_client.publish('hermes/dialogueManager/continueSession',
+                        json.dumps({'text': text, "sessionId": session_id, "intentFilter": intent_filter}))
 
 
 class Fortunes:
     def __init__(self, config, topics):
-        self.wanted_intents = []
         self.topics = topics
         try:
             self.max_length = int(config['global']['fortunes_max_laenge'])
@@ -121,5 +143,7 @@ class Fortunes:
 if __name__ == "__main__":
     fortunes = Fortunes(read_configuration_file(CONFIG_INI), FORTUNE_TOPICS)
     fortunes.fortunes_status = fortunes.read_files()
-    with Hermes("localhost:1883") as h:
-        h.subscribe_intents(subscribe_intent_callback).start()
+    mqtt_client.on_connect = on_connect
+    mqtt_client.on_message = on_message
+    mqtt_client.connect("localhost", "1883")
+    mqtt_client.loop_forever()
