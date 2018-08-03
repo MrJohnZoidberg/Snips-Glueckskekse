@@ -38,7 +38,7 @@ def subscribe_intent_callback(hermes, intentMessage):
             action_wrapper(hermes, intentMessage, conf)
         else:
             result_sentence = "Fehler: Glückskekse konnten nicht eingelesen werden. Bitte schaue in der Beschreibung" \
-                              "dieses Skills nach, wie man Fortunes installiert."
+                              "dieser App nach, wie man Fortunes installiert."
             hermes.publish_end_session(intentMessage.session_id, result_sentence)
     elif intentname == "confirmOtherCookie":
         if "confirmOtherCookie" in fortunes.wanted_intents:
@@ -59,7 +59,7 @@ def action_wrapper(hermes, intentMessage, conf):
     - hermes : an object with methods to communicate with the MQTT bus following the hermes protocol. 
     - conf : a dictionary that holds the skills parameters you defined 
     """
-    if intentMessage.slots.topic.all():
+    if intentMessage.slots.topic:
         topic = intentMessage.slots.topic.first().value.lower()
         fortunes.last_topic = topic
     elif fortunes.last_topic:
