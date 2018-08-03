@@ -69,7 +69,7 @@ def on_message(client, userdata, msg):
 
 
 def action_wrapper(client, slots, session_id):
-    if slots['topic']:
+    if 'topic' in slots:
         topic = slots['topic'].lower()
         fortunes.last_topic = topic
     elif fortunes.last_topic:
