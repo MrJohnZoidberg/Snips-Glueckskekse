@@ -55,7 +55,9 @@ def on_message(client, userdata, msg):
         data = json.loads(msg.payload.decode("utf-8"))
         if data['text'] == "":
             session_id = data['sessionId']
-            dialogue(session_id, "Noch ein Spruch?", ["domi:confirmOtherCookie"])
+            print("Trying to end session...")
+            end(session_id)
+            start("Noch ein Spruch?", ["domi:confirmOtherCookie"])
     elif msg.topic == 'hermes/intent/domi:confirmOtherCookie':
         data = json.loads(msg.payload.decode("utf-8"))
         session_id = data['sessionId']
@@ -85,6 +87,10 @@ def action_wrapper(client, slots, session_id):
 def say(session_id, text):
     mqtt_client.publish('hermes/dialogueManager/endSession', json.dumps({'text': text, "sessionId": session_id}))
 
+def start(text, intent_filter):
+    mqtt_client.publish('hermes/dialogueManager/startSession',
+                        json.dumps({'type': "action", 'text': text, 'canBeEnqueued': True,
+                                    'intentFilter': intent_filter}))
 
 def end(session_id):
     mqtt_client.publish('hermes/dialogueManager/endSession', json.dumps({"sessionId": session_id}))
