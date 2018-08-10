@@ -53,7 +53,7 @@ But you can also ask for another category of the `fortunes-de` package, for exam
 - *lese ein Sprichwort vor*
 - [...]
 
-By the way, the used categories of the `fortunes-de` package are the following:
+By the way, the categories used of the `fortunes-de` package are as follows:
 
 - `tips`
 - `sprueche`
@@ -76,4 +76,4 @@ By the way, the used categories of the `fortunes-de` package are the following:
 
 ## TODO
 
-- Do not repeat the cookie if no answer comes from user
+At this time there are no TODOs.
