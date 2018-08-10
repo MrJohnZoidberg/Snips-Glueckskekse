@@ -113,16 +113,14 @@ class Fortunes:
         self.topics = topics
         try:
             self.max_length = int(config['global']['fortunes_max_laenge'])
-        except KeyError:
+            self.max_question_repetitions = int(config['global']['max_frage_wiederholungen'])
+        except KeyError or ValueError:  # dictionaray not filled with values
             self.max_length = 100
+            self.max_question_repetitions = 1
         self.all_fortunes = {}
         self.fortunes_status = None
         self.last_topic = None
         self.question_repetitions = 0
-        try:
-            self.max_question_repetitions = int(config['global']['max_frage_wiederholungen'])
-        except KeyError:
-            self.max_question_repetitions = 1
 
     def read_files(self):
         try:
