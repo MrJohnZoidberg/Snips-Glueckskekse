@@ -111,8 +111,8 @@ def dialogue(session_id, text, intent_filter):
 class Fortunes:
     def __init__(self, config, topics):
         self.topics = topics
-        self.max_length = config['global']['fortunes_max_laenge']
-        self.max_question_repetitions = config['global']['max_frage_wiederholungen']
+        self.max_length = config['secret']['fortunes_max_laenge']
+        self.max_question_repetitions = config['secret']['max_frage_wiederholungen']
         if not self.max_length:  # if dictionaray not filled with values
             self.max_length = 100
         else:
