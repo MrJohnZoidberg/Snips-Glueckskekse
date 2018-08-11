@@ -13,15 +13,19 @@ A skill for Snips.ai for speaking fortune cookies from package "fortunes-de".
 
 - In the German [skill store](https://console.snips.ai/) add the skill `Witze und Glückskekse` to your *German* assistant
 
-- With the parameter `fortunes_max_laenge` you can set the maximum length of all the fortunes, so that no very long fortune cookies are read out. The default is 100 characters.
-
 - Then install your assistant on the platform with [Sam](https://snips.gitbook.io/getting-started/installation):
 
   ```bash
   sam install assistant
   ```
 
-- And install the skills included in your assistant:
+- You will be asked to fill some parameters with values.
+The following should explain these parameters:
+    - With the parameter `fortunes_max_laenge` you can set the maximum length of all the fortunes,
+so that no very long fortune cookies are read out. The default is 100 characters.
+    - The value in `max_frage_wiederholungen` controls the number of repetitions of the Question
+    "Noch ein Spruch?" if the answer was not understood. The default is one repetition.
+- If you want to change the values again, you can run:
 
   ```bash
   sam install skills
