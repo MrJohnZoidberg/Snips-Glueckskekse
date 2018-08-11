@@ -114,7 +114,7 @@ class Fortunes:
         try:
             self.max_length = int(config['global']['fortunes_max_laenge'])
             self.max_question_repetitions = int(config['global']['max_frage_wiederholungen'])
-        except KeyError or ValueError:  # dictionaray not filled with values
+        except (KeyError, ValueError):  # dictionaray not filled with values
             self.max_length = 100
             self.max_question_repetitions = 1
         self.all_fortunes = {}
