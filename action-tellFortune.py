@@ -61,7 +61,23 @@ def on_message(client, userdata, msg):
                 fortunes.question_repetitions += 1
                 client.subscribe("hermes/asr/textCaptured")
                 start("Noch ein Spruch?", ["domi:confirmOtherCookie"])
+            else:
+                client.unsubscribe("hermes/intent/domi:confirmOtherCookie")
+                client.unsubscribe("hermes/nlu/intentNotRecognized")
+    elif msg.topic ==  'hermes/nlu/intentNotRecognized':
+        client.unsubscribe("hermes/nlu/intentNotRecognized")
+        data = json.loads(msg.payload.decode("utf-8"))
+        session_id = data['sessionId']
+        end(session_id)
+        if fortunes.question_repetitions < fortunes.max_question_repetitions:
+            fortunes.question_repetitions += 1
+            client.subscribe("hermes/asr/textCaptured")
+            client.subscribe("hermes/nlu/intentNotRecognized")
+            start("Noch ein Spruch?", ["domi:confirmOtherCookie"])
+        else:
+            client.unsubscribe("hermes/intent/domi:confirmOtherCookie")
     elif msg.topic == 'hermes/intent/domi:confirmOtherCookie':
+        client.unsubscribe("hermes/nlu/intentNotRecognized")
         data = json.loads(msg.payload.decode("utf-8"))
         session_id = data['sessionId']
         slots = {slot['slotName']: slot['value']['value'] for slot in data['slots']}
@@ -84,6 +100,7 @@ def action_wrapper(client, slots, session_id):
     result_sentence = fortunes.say(topic)
     client.subscribe("hermes/intent/domi:confirmOtherCookie")
     client.subscribe("hermes/asr/textCaptured")
+    client.subscribe("hermes/nlu/intentNotRecognized")
     fortunes.question_repetitions = 0
     dialogue(session_id, result_sentence, ["domi:confirmOtherCookie"])
 
