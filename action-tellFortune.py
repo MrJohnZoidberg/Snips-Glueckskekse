@@ -58,7 +58,7 @@ def on_message(client, userdata, msg):
         if data['text'] == "":
             session_id = data['sessionId']
             end(session_id)
-            if fortunes.question_repetitions < int(fortunes.max_question_repetitions):
+            if fortunes.question_repetitions < fortunes.max_question_repetitions:
                 fortunes.question_repetitions += 1
                 client.subscribe("hermes/asr/textCaptured")
                 start("Noch ein Spruch?", ["domi:confirmOtherCookie"])
@@ -111,12 +111,16 @@ def dialogue(session_id, text, intent_filter):
 class Fortunes:
     def __init__(self, config, topics):
         self.topics = topics
-        try:
-            self.max_length = config['global']['fortunes_max_laenge']
-            self.max_question_repetitions = config['global']['max_frage_wiederholungen']
-        except KeyError:  # dictionaray not filled with values
+        self.max_length = config['global']['fortunes_max_laenge']
+        self.max_question_repetitions = config['global']['max_frage_wiederholungen']
+        if not self.max_length:  # if dictionaray not filled with values
             self.max_length = 100
+        else:
+            self.max_length = int(self.max_length)
+        if not self.max_question_repetitions:
             self.max_question_repetitions = 1
+        else:
+            self.max_question_repetitions = int(self.max_question_repetitions)
         self.all_fortunes = {}
         self.fortunes_status = None
         self.last_topic = None
@@ -130,7 +134,7 @@ class Fortunes:
                     fortunes_dict[topic] = f.read().encode('utf8').split('%')
                 cookies = []
                 for cookie in fortunes_dict[topic]:
-                    if int(self.max_length) >= len(cookie) > 1:
+                    if self.max_length >= len(cookie) > 1:
                         cookies.append(cookie)
                 fortunes_dict[topic] = cookies  # without cookies over maximum length
             self.all_fortunes = fortunes_dict
