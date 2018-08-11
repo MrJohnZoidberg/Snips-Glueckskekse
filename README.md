@@ -11,7 +11,7 @@ A skill for Snips.ai for speaking fortune cookies from package "fortunes-de".
       sudo apt update && sudo apt install fortunes-de
       ```
 
-2. In the German [skill store](https://console.snips.ai/) add the skill `Witze und Glückskekse` to your *German* assistant
+2. In the German [skill store](https://console.snips.ai/) add the skill `Witze und Glückskekse` ([this](https://console.snips.ai/app-editor/bundle_7ZYEq522Ang)) to your *German* assistant
 
 3. Then install your assistant on the platform with [Sam](https://snips.gitbook.io/getting-started/installation):
       ```bash
