@@ -78,6 +78,7 @@ def on_message(client, userdata, msg):
             client.unsubscribe("hermes/intent/domi:confirmOtherCookie")
     elif msg.topic == 'hermes/intent/domi:confirmOtherCookie':
         client.unsubscribe("hermes/nlu/intentNotRecognized")
+        client.unsubscribe("hermes/intent/domi:confirmOtherCookie")
         data = json.loads(msg.payload.decode("utf-8"))
         session_id = data['sessionId']
         slots = {slot['slotName']: slot['value']['value'] for slot in data['slots']}
