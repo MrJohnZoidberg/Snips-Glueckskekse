@@ -4,6 +4,9 @@ A skill for Snips.ai for speaking fortune cookies from package "fortunes-de".
 
 
 ## Installation
+**Important:** The following instructions assume that [Snips](https://snips.gitbook.io/documentation/snips-basics) is
+already configured and running on your device. [SAM](https://snips.gitbook.io/getting-started/installation) should
+also already be set up and connected to your device and your account.
 
 1. Install package `fortunes-de` on your Raspberry Pi or Linux OS, where Snips runs on with:
 
@@ -11,7 +14,9 @@ A skill for Snips.ai for speaking fortune cookies from package "fortunes-de".
       sudo apt update && sudo apt install fortunes-de
       ```
 
-2. In the German [skill store](https://console.snips.ai/) add the skill `Witze und Glückskekse` ([this](https://console.snips.ai/app-editor/bundle_7ZYEq522Ang)) to your *German* assistant
+2. In the German [skill store](https://console.snips.ai/) add the
+skill `Witze und Glückskekse` (by domi; [this](https://console.snips.ai/app-editor/bundle_7ZYEq522Ang)) to
+your *German* assistant
 
 3. Then install your assistant on the platform with [Sam](https://snips.gitbook.io/getting-started/installation):
       ```bash
