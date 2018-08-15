@@ -16,13 +16,20 @@ also already be set up and connected to your device and your account.
 
 2. In the German [skill store](https://console.snips.ai/) add the
 skill `Witze und Glückskekse` (by domi; [this](https://console.snips.ai/app-editor/bundle_7ZYEq522Ang)) to
-your *German* assistant
+your *German* assistant.
 
-3. Then install your assistant on the platform with [Sam](https://snips.gitbook.io/getting-started/installation):
+3. If you already have the same assistant on your platform, update it
+(with [Sam](https://snips.gitbook.io/getting-started/installation)) with:
+      ```bash
+      sam update-assistant
+      ```
+      
+   Otherwise install the assistant on the platform with [Sam](https://snips.gitbook.io/getting-started/installation)
+   with the following command to choose it (if you have multiple assistants in your Snips console):
       ```bash
       sam install assistant
       ```
-  
+
 4. You will be asked to fill some parameters with values.
 The following should explain these parameters:
     - With the parameter `fortunes_max_laenge` you can set the maximum length of all the fortunes,
@@ -33,6 +40,7 @@ so that no very long fortune cookies are read out. The default is 100 characters
       ```bash
       sam install skills
       ```
+   The command will only update the skills, not the whole assistant.
 
 ## Usage
 
@@ -81,6 +89,12 @@ By the way, the categories used of the `fortunes-de` package are as follows:
 - `doppelsinnig`
 - `lieberals`
 
-## TODO
+## Todo
 
 - Publish cookies over MQTT
+
+## Contribution
+
+Please report errors (you can see them with `sam service log`) and bugs by
+opening a [new issue](https://github.com/MrJohnZoidberg/Snips-Glueckskekse/issues/new).
+You can also write other ideas for this skill. Thank you for your contribution.
