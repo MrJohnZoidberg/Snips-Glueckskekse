@@ -23,6 +23,11 @@ fi
 
 pip install -r requirements.txt
 
+if [ -f config.ini ]
+then
+    rm -rf config.ini
+fi
+
 if [ -f /usr/share/snips/assistant/snippets/domi.Witze_\&_Glueckskekse/config.ini ]
 then
     cp /usr/share/snips/assistant/snippets/domi.Witze_\&_Glueckskekse/config.ini config.ini
