@@ -22,3 +22,10 @@ fi
 . $VENV/bin/activate
 
 pip install -r requirements.txt
+
+if [ -f /usr/share/snips/assistant/snippets/domi.Witze_\&_Glueckskekse/config.ini ]
+then
+    cp /usr/share/snips/assistant/snippets/domi.Witze_\&_Glueckskekse/config.ini config.ini
+else
+    cp config.ini.default config.ini
+fi

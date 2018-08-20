@@ -16,7 +16,7 @@ also already be set up and connected to your device and your account.
     This step must be completed *before* installing the assistant.
     
 2. In the German [skill store](https://console.snips.ai/) add the
-skill `Witze und Glückskekse` (by domi; [this](https://console.snips.ai/app-editor/bundle_7ZYEq522Ang)) to
+skill `Witze & Glückskekse` (by domi; [this](https://console.snips.ai/app-editor/bundle_7ZYEq522Ang)) to
 your *German* assistant.
 
 3. If you already have the same assistant on your platform, update it

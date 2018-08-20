@@ -1,0 +1,4 @@
+[global]
+fortunes_max_laenge=100
+max_frage_wdh=1
+[secret]

@@ -128,16 +128,22 @@ def dialogue(session_id, text, intent_filter):
 class Fortunes:
     def __init__(self, config, topics):
         self.topics = topics
-        self.max_length = config['secret']['fortunes_max_laenge']
-        self.max_question_repetitions = config['secret']['max_frage_wiederholungen']
-        if not self.max_length:  # if dictionaray not filled with values
+        if 'fortunes_max_laenge' in config['global'].keys():
+            self.max_length = config['global']['fortunes_max_laenge']
+            if not self.max_length:
+                self.max_length = 100
+            else:
+                self.max_length = int(self.max_length)
+        else:
             self.max_length = 100
+        if 'max_frage_wdh' in config['global'].keys():
+            self.max_question_repetitions = config['global']['max_frage_wdh']
+            if not self.max_question_repetitions:  # if dictionaray not filled with values
+                self.max_question_repetitions = 1
+            else:
+                self.max_question_repetitions = int(self.max_question_repetitions)
         else:
-            self.max_length = int(self.max_length)
-        if not self.max_question_repetitions:
             self.max_question_repetitions = 1
-        else:
-            self.max_question_repetitions = int(self.max_question_repetitions)
         self.all_fortunes = {}
         self.fortunes_status = None
         self.last_topic = None
