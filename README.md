@@ -1,5 +1,5 @@
 # Snips-Glückskekse 🥠
-A skill for Snips.ai for speaking fortune cookies from package "fortunes-de".
+A app for Snips.ai for speaking fortune cookies from package "fortunes-de".
 
 
 
@@ -15,8 +15,8 @@ also already be set up and connected to your device and your account.
       ```
     This step must be completed *before* installing the assistant.
     
-2. In the German [skill store](https://console.snips.ai/) add the
-skill `Witze & Glückskekse` (by domi; [this](https://console.snips.ai/app-editor/bundle_7ZYEq522Ang)) to
+2. In the German [app store](https://console.snips.ai/) add the
+app `Witze & Glückskekse` (by domi; [this](https://console.snips.ai/app-editor/bundle_7ZYEq522Ang)) to
 your *German* assistant.
 
 3. If you already have the same assistant on your platform, update it
@@ -31,17 +31,23 @@ your *German* assistant.
       sam install assistant
       ```
 
-4. You will be asked to fill some parameters with values.
+    That's it!
+    
+## Configuration
+
+In your Snips console you can change some values by clicking on this skill (`Witze & Glückskekse`).
+
 The following should explain these parameters:
-    - With the parameter `fortunes_max_laenge` you can set the maximum length of all the fortunes,
+- With the parameter `fortunes_max_laenge` you can set the maximum length of all the fortunes,
 so that no very long fortune cookies are read out. The default is 100 characters.
-    - The value in `max_frage_wiederholungen` controls the number of repetitions of the Question
+- The value in `max_frage_wdh` controls the number of repetitions of the question
     "Noch ein Spruch?" if the answer was not understood. The default is one repetition.
-5. If you want to change the values again, you can run:
-      ```bash
-      sam install skills
-      ```
-   The command will only update the skills, not the whole assistant.
+    
+If you have changed the values, you must then run
+  ```bash
+  sam update-assistant
+  ```
+so that the config is on your device.
 
 ## Usage
 
