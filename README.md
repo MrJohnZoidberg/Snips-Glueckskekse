@@ -31,7 +31,7 @@ your *German* assistant.
       sam install assistant
       ```
 
-    That's it!
+  That's it!
     
 ## Configuration
 
