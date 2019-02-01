@@ -182,5 +182,5 @@ if __name__ == "__main__":
     fortunes.fortunes_status = fortunes.read_files()
     mqtt_client.on_connect = on_connect
     mqtt_client.on_message = on_message
-    mqtt_client.connect("localhost", "1883")
+    mqtt_client.connect("localhost", 1883)
     mqtt_client.loop_forever()
