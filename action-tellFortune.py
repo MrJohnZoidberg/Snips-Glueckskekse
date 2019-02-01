@@ -148,7 +148,7 @@ class Fortunes:
             fortunes_dict = {}
             for topic in self.topics:
                 with io.open("de/" + topic, 'r') as f:
-                    fortunes_dict[topic] = f.read().encode('utf8').split('%')
+                    fortunes_dict[topic] = f.read().encode('utf8').split(b'%')
                 cookies = []
                 for cookie in fortunes_dict[topic]:
                     if self.max_length >= len(cookie) > 1:
