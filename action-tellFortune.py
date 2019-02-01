@@ -1,32 +1,26 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import ConfigParser
+import configparser
 import io
 import paho.mqtt.client as mqtt
 import json
 import random
 
-CONFIGURATION_ENCODING_FORMAT = "utf-8"
 CONFIG_INI = "config.ini"
 FORTUNE_TOPICS = ["tips", "sprueche", "wusstensie", "murphy", "fussball", "bahnhof",
                   "ms", "letzteworte", "regeln", "quiz", "sprichworte", "unfug", "witze",
                   "warmduscher", "zitate", "kinderzitate", "doppelsinnig", "lieberals"]
 
 
-class SnipsConfigParser(ConfigParser.SafeConfigParser):
-    def to_dict(self):
-        return {section: {option_name: option for option_name, option in self.items(section)}
-                for section in self.sections()}
-
-
 def read_configuration_file(configuration_file):
     try:
-        with io.open(configuration_file, encoding=CONFIGURATION_ENCODING_FORMAT) as f:
-            conf_parser = SnipsConfigParser()
-            conf_parser.readfp(f)
-            return conf_parser.to_dict()
-    except (IOError, ConfigParser.Error):
+        cp = configparser.ConfigParser()
+        with io.open(configuration_file, encoding="utf-8") as f:
+            cp.read_file(f)
+        return {section: {option_name: option for option_name, option in cp.items(section)}
+                for section in cp.sections()}
+    except (IOError, configparser.Error):
         return dict()
 
 
