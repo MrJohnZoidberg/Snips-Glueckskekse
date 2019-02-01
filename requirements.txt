@@ -1,2 +1,3 @@
 # Bindings for the hermes protocol 
 paho-mqtt
+configparser
